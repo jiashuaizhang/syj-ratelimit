@@ -1,7 +1,7 @@
 package cn.org.zhixiang.ratelimit.impl;
 
-import cn.org.zhixiang.exception.BusinessErrorEnum;
-import cn.org.zhixiang.exception.BusinessException;
+import cn.org.zhixiang.exception.RateLimitErrorEnum;
+import cn.org.zhixiang.exception.RateLimitException;
 import cn.org.zhixiang.ratelimit.RateLimiter;
 import cn.org.zhixiang.util.Const;
 import lombok.extern.slf4j.Slf4j;
@@ -20,26 +20,35 @@ import java.util.List;
  * Description
  */
 @Slf4j
-public class RedisRateLimiterCounterImpl extends RateLimiter {
+public class RedisRateLimiterCounterImpl implements RateLimiter {
 
     @Autowired
     private RedisTemplate redisTemplate;
 
-    private DefaultRedisScript<Long> redisScript;
+    private DefaultRedisScript<String> redisScript;
 
-    public RedisRateLimiterCounterImpl(DefaultRedisScript<Long> redisScript){
+    public RedisRateLimiterCounterImpl(DefaultRedisScript<String> redisScript){
         this.redisScript=redisScript;
     }
 
+    /**
+     *
+     * @param key 限流key
+     * @param limit 限流个数
+     * @param lrefreshInterval 限流时间间隔
+     * @param tokenBucketStepNum
+     * @param tokenBucketTimeInterval
+     */
     @Override
-    public void counterConsume(String key, long limit, long lrefreshInterval, long tokenBucketStepNum, long tokenBucketTimeInterval) {
-        List<Object> keyList = new ArrayList();
+    public void consume(String key, long limit, long lrefreshInterval, long tokenBucketStepNum, long tokenBucketTimeInterval) {
+        List<Object> keyList = new ArrayList(1);
+        List<Object> argvList = new ArrayList<>(2);
         keyList.add(key);
-        keyList.add(limit+Const.HASH_TAG);
-        keyList.add(lrefreshInterval+Const.HASH_TAG);
-        String result=redisTemplate.execute(redisScript,keyList,keyList).toString();
+        argvList.add(String.valueOf(limit));
+        argvList.add(String.valueOf(lrefreshInterval));
+        String result=redisTemplate.execute(redisScript, keyList, argvList.toArray()).toString();
         if(Const.REDIS_ERROR.equals(result)){
-            throw new BusinessException(BusinessErrorEnum.TOO_MANY_REQUESTS);
+            throw new RateLimitException(RateLimitErrorEnum.TOO_MANY_REQUESTS);
         }
     }
 }

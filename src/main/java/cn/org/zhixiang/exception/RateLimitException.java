@@ -7,15 +7,15 @@ package cn.org.zhixiang.exception;
  * CreateTime    2018/09/07
  * Description   业务异常信息类
  */
-public class BusinessException extends RuntimeException {
+public class RateLimitException extends RuntimeException {
     private String msg;
     private Integer status;
 
-    public BusinessException(BusinessErrorEnum error){
+    public RateLimitException(RateLimitErrorEnum error){
         this.msg = error.getMsg();
     }
 
-    public BusinessException(String msg) {
+    public RateLimitException(String msg) {
         super(msg);
         this.msg = msg;
     }

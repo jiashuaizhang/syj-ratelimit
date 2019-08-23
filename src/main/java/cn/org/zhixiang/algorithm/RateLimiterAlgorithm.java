@@ -1,5 +1,7 @@
 package cn.org.zhixiang.algorithm;
 
+import cn.org.zhixiang.exception.RateLimitException;
+
 /**
  * Description :
  *
@@ -9,5 +11,5 @@ package cn.org.zhixiang.algorithm;
  */
 public interface RateLimiterAlgorithm {
 
-    public void consume(String key, long limit, long lrefreshInterval, long tokenBucketStepNum, long tokenBucketTimeInterval);
+    void consume(String key, long limit, long lrefreshInterval, long tokenBucketStepNum, long tokenBucketTimeInterval);
 }

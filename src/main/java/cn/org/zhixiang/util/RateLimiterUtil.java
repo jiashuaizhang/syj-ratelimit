@@ -1,8 +1,8 @@
 package cn.org.zhixiang.util;
 
 import cn.org.zhixiang.annotation.CheckTypeEnum;
-import cn.org.zhixiang.exception.BusinessErrorEnum;
-import cn.org.zhixiang.exception.BusinessException;
+import cn.org.zhixiang.exception.RateLimitErrorEnum;
+import cn.org.zhixiang.exception.RateLimitException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -45,7 +45,7 @@ public class RateLimiterUtil {
             if(request.getUserPrincipal()!=null){
                 key.append(request.getUserPrincipal().getName());
             }else{
-                throw new BusinessException(BusinessErrorEnum.USER_NOT_DOUND);
+                throw new RateLimitException(RateLimitErrorEnum.USER_NOT_FOUND);
             }
         }
         //以IP地址作为key
@@ -57,7 +57,7 @@ public class RateLimiterUtil {
             if(request.getAttribute(Const.CUSTOM)!=null){
                 key.append(request.getAttribute(Const.CUSTOM).toString());
             }else{
-                throw new BusinessException(BusinessErrorEnum.CUSTOM_NOT_DOUND);
+                throw new RateLimitException(RateLimitErrorEnum.CUSTOM_NOT_FOUND);
             }
         }
         return key.toString();

@@ -38,6 +38,7 @@ public class EnableSyjRateLimitConfiguration {
         RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
         template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
         template.afterPropertiesSet();
         return template;
     }
@@ -45,8 +46,8 @@ public class EnableSyjRateLimitConfiguration {
     @Bean(name = "rateLimiter")
     @ConditionalOnProperty(prefix = Const.PREFIX, name = "algorithm", havingValue = "token")
     public RateLimiter tokenRateLimiter() {
-        DefaultRedisScript<Long> consumeRedisScript=new DefaultRedisScript();
-        consumeRedisScript.setResultType(Long.class);
+        DefaultRedisScript<String> consumeRedisScript=new DefaultRedisScript();
+        consumeRedisScript.setResultType(String.class);
         consumeRedisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("script/redis-ratelimiter-tokenBucket.lua")));
         return new RedisRateLimiterTokenBucketImpl(consumeRedisScript);
     }
@@ -54,8 +55,8 @@ public class EnableSyjRateLimitConfiguration {
     @Bean(name = "rateLimiter")
     @ConditionalOnProperty(prefix = Const.PREFIX, name = "algorithm", havingValue = "counter", matchIfMissing = true)
     public RateLimiter counterRateLimiter() {
-        DefaultRedisScript<Long> redisScript=new DefaultRedisScript();
-        redisScript.setResultType(Long.class);
+        DefaultRedisScript<String> redisScript=new DefaultRedisScript();
+        redisScript.setResultType(String.class);
         redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("script/redis-ratelimiter-counter.lua")));
         return new RedisRateLimiterCounterImpl(redisScript);
     }
