@@ -1,6 +1,5 @@
 package cn.org.zhixiang.util;
 
-import cn.org.zhixiang.annotation.CheckTypeEnum;
 import cn.org.zhixiang.exception.RateLimitErrorEnum;
 import cn.org.zhixiang.exception.RateLimitException;
 import org.aspectj.lang.JoinPoint;

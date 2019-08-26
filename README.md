@@ -73,16 +73,20 @@ spring:
 ### 4.  使用syj-ratelimit
 >其实看到这一步的时候您已经可以使用syj-ratelimit来进行限流了哦。<br>
 
-##### syj-ratelimit为您提供了两个注解来进行限流，它们是@ClassRateLimit和@MethodRateLimit。顾名思义，它们一个是用在类上的一个是用在方法上的。他们的功能是一样的，之所以分出来两个注解的原因就是为了解决当一个类的不同接口需要进行不同的限流方案问题
-
-因为两个注解的内容一样，所以我们先以@ClassRateLimit为例看一下其中的几个属性
+##### syj-ratelimit为您提供了注解来进行限流，只需在类或方法上@RateLimit
 
 ```java
-public @interface ClassRateLimit {
+public @interface RateLimit {
     /**
      *ALL
      */
     public CheckTypeEnum checkType() default CheckTypeEnum.ALL;
+    
+    /**
+     * 限流算法
+     * @return
+     */
+    RateLimitAlgorithm algorithm() default RateLimitAlgorithm.COUNTER;
     /**
      * 限流次数。默认值10
      */
@@ -97,7 +101,7 @@ public @interface ClassRateLimit {
 来几个使用的例子吧<br>
 1. 限流总资源数。（例如，需要每个方法每30秒只允许调用10次）<br>
 ```java
-@ClassRateLimit(limit = 10,refreshInterval=30)
+@RateLimit(limit = 10,refreshInterval=30)
 @RestController
 @RequestMapping("/testClass")
 public class TestClassRateLimitController {
@@ -116,7 +120,7 @@ public class TestClassRateLimitController {
 ```
 2.  根据IP限流总资源数
 ```java
-@ClassRateLimit(limit = 10,refreshInterval=30,checkType = CheckTypeEnum.IP)//每个IP每30秒可以访问10次
+@RateLimit(limit = 10,refreshInterval=30,checkType = CheckTypeEnum.IP)//每个IP每30秒可以访问10次
 ```
 3. 根据自定义信息限流总资源数（自定义时推荐在controller中查出能标识用户唯一性的值放入request中，然后把限流注解添加到service中进行限流）
 ```java
@@ -135,7 +139,7 @@ public class TestRateLimitController {
     }
 }
 
-@ClassRateLimit(limit = 10,refreshInterval=30,checkType = CheckTypeEnum.CUSTOM)
+@RateLimit(limit = 10,refreshInterval=30,checkType = CheckTypeEnum.CUSTOM)
 public class TestService {
     public  void testCstom(){
         System.out.println("此方法每个key为Const.CUSTOM的用户每30秒可以进入10次");
@@ -158,7 +162,7 @@ public class TestRateLimitController {
         System.out.println("没有拦截");
     }
 
-    @MethodRateLimit(checkType = CheckTypeEnum.USER)
+    @RateLimit(checkType = CheckTypeEnum.USER)
     @PostMapping("/user")
     public void user(){
         System.out.println("根据用户信息拦截");//用户信息取自request.getUserPrincipal()
@@ -178,17 +182,11 @@ public class TestRateLimitController {
 程序默认使用计数器算法进行限流，如果您要使用计数器法的话无需要额外的配置。
 2.  令牌桶算法<br>
 如果您想要使用令牌桶算法的话，那么有两个需要注意的地方。
-    1. 再配置文件中指定算法为令牌桶算法。（推荐您使用yml文件或者properties文件）
-        1. yml
-        ```yaml
-           syj-rateLimit:
-             algorithm: token
-       ```
-        2. properties
-        ```properties
-               syj-rateLimit.algorithm= token
-       ```
-    2.  您需要将目光放到@ClassRateLimit上的另外两个属性上
+    1. 在注解中指定algorithm为TOKEN_BUCKET
+    ```java
+        @RateLimit(limit = 8, algorithm = RateLimitAlgorithm.TOKEN_BUCKET)
+    ```
+    2.  您需要将目光放到@RateLimit上的另外两个属性上
     ```java
         /**
          * 向令牌桶中添加数据的时间间隔,以秒为单位。默认值10秒
@@ -229,6 +227,9 @@ public class TestRateLimitController {
 >1. 修复令牌桶算法脚本的bug
 #####  z-1.1.2
 >1. 修复集群模式下的bug,修正hashTag的使用
+#####  z-1.1.3
+>1. 统一了类和方法上的注解，以方法注解为优先
+>2. 限流算法细化到注解级
 
 
 

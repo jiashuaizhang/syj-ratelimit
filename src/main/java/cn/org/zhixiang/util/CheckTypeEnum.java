@@ -1,4 +1,4 @@
-package cn.org.zhixiang.annotation;
+package cn.org.zhixiang.util;
 
 /**
  * Description :
