@@ -1,5 +1,6 @@
 package cn.org.zhixiang.util;
 
+import cn.org.zhixiang.annotation.RateLimit;
 import cn.org.zhixiang.exception.RateLimitErrorEnum;
 import cn.org.zhixiang.exception.RateLimitException;
 import org.aspectj.lang.JoinPoint;
@@ -8,6 +9,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -55,6 +57,24 @@ public class RateLimiterUtil {
             }
         }
         return key.toString();
+    }
+
+    /**
+     * 从类或方法上提取RateLimit注解
+     * @param joinPoint
+     * @return
+     */
+    public static RateLimit getRateLimitAnnotation(JoinPoint joinPoint) {
+        //获取方法
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        RateLimit rateLimit = method.getAnnotation(RateLimit.class);
+        //方法上没有注解，则以类上的为准
+        if(rateLimit == null) {
+            Class<?> target = joinPoint.getTarget().getClass();
+            rateLimit = target.getAnnotation(RateLimit.class);
+        }
+        return rateLimit;
     }
 
     /**

@@ -39,18 +39,11 @@ public class RateLimitAnnotationAspect {
      */
     @Before("@within(cn.org.zhixiang.annotation.RateLimit) || @annotation(cn.org.zhixiang.annotation.RateLimit)")
     public void doBefore(JoinPoint joinPoint) {
-        //获取方法
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-        RateLimit rateLimit = method.getAnnotation(RateLimit.class);
-        //方法上没有注解，则以类上的为准
-        if(rateLimit == null) {
-            Class<?> target = joinPoint.getTarget().getClass();
-            rateLimit = target.getAnnotation(RateLimit.class);
-        }
-        String key = RateLimiterUtil.getRateKey(joinPoint, rateLimit.checkType());
-        RateLimiter rateLimiter = rateLimiterMap.get(rateLimit.algorithm());
-        rateLimiter.consume(key,rateLimit.limit(),rateLimit.refreshInterval(),rateLimit.tokenBucketStepNum(),rateLimit.tokenBucketTimeInterval());
+        RateLimit rateLimitAnnotation = RateLimiterUtil.getRateLimitAnnotation(joinPoint);
+        String key = RateLimiterUtil.getRateKey(joinPoint, rateLimitAnnotation.checkType());
+        RateLimiter rateLimiter = rateLimiterMap.get(rateLimitAnnotation.algorithm());
+        rateLimiter.consume(key,rateLimitAnnotation.limit(),rateLimitAnnotation.refreshInterval(),
+                rateLimitAnnotation.tokenBucketStepNum(),rateLimitAnnotation.tokenBucketTimeInterval());
     }
 
 }
