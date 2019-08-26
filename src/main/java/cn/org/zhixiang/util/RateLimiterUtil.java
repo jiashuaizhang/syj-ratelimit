@@ -20,6 +20,11 @@ import java.net.UnknownHostException;
  * Description   RateLimiter工具类
  */
 public class RateLimiterUtil {
+
+    private static String METHOD_PARAM_SEPARATOR = "#";
+    private static String PARAM_SEPARATOR = ",";
+    private static String PARAM_CLASS_SEPARATOR = "@";
+
     /**
      * 获取唯一标识此次请求的key
      * @param joinPoint 切点
@@ -27,17 +32,7 @@ public class RateLimiterUtil {
      * @return key
      */
     public static String getRateKey(JoinPoint joinPoint, CheckTypeEnum checkTypeEnum){
-        StringBuilder key = new StringBuilder();
-        //以方法名加参数列表作为唯一标识方法的key
-        if(CheckTypeEnum.ALL.equals(checkTypeEnum)){
-            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-            key.append(signature.getMethod().getName());
-            Class[] parameterTypes=signature.getParameterTypes();
-            for (Class clazz:parameterTypes){
-                key.append(clazz.getName());
-            }
-            key.append(joinPoint.getTarget().getClass());
-        }
+        StringBuilder key = appendCommonKey(joinPoint);
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
         //以用户信息作为key
@@ -63,6 +58,25 @@ public class RateLimiterUtil {
         return key.toString();
     }
 
+    /**
+     * 根据方法信息拼接唯一标识
+     * @param joinPoint
+     * @return
+     */
+    private static StringBuilder appendCommonKey(JoinPoint joinPoint){
+        StringBuilder key = new StringBuilder();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        key.append(signature.getName()).append(METHOD_PARAM_SEPARATOR);
+        Class[] parameterTypes=signature.getParameterTypes();
+        for (Class clazz:parameterTypes){
+            key.append(clazz.getName());
+            if(clazz != parameterTypes[parameterTypes.length - 1]){
+                key.append(PARAM_SEPARATOR);
+            }
+        }
+        key.append(PARAM_CLASS_SEPARATOR).append(joinPoint.getTarget().getClass().getName());
+        return key;
+    }
     /**
      * 获取当前网络ip
      *

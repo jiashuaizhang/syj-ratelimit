@@ -80,7 +80,7 @@ spring:
 ```java
 public @interface ClassRateLimit {
     /**
-     * 限流类型。默认值：ALL。可选值：ALL,IP,USER,CUSTOM
+     *ALL
      */
     public CheckTypeEnum checkType() default CheckTypeEnum.ALL;
     /**

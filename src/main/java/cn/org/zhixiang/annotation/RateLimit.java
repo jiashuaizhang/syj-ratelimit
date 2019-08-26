@@ -6,14 +6,14 @@ import java.lang.annotation.*;
  * Description :
  *
  * @author  syj
- * CreateTime    2018/09/07
- * Description   限流注解(应用于类)
+ * CreateTime    2018/09/04
+ * Description   限流注解
  */
-@Target(ElementType.TYPE)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-public @interface ClassRateLimit {
+public @interface RateLimit {
     /**
      *
      * @return CheckTypeEnum 限流类型。默认值：ALL。可选值：ALL,IP,USER,CUSTOM

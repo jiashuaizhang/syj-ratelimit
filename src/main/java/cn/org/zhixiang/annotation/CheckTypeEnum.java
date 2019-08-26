@@ -9,7 +9,7 @@ package cn.org.zhixiang.annotation;
  */
 public enum CheckTypeEnum {
         /**
-         * 所有请求统一限流。例：此方法1分钟只允许访问n次
+         * 根据方法统一限流。例：此方法1分钟只允许访问n次
          */
         ALL,
         /**
