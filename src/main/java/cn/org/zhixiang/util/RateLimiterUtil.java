@@ -36,26 +36,32 @@ public class RateLimiterUtil {
         StringBuilder key = appendCommonKey(joinPoint);
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
-        //以用户信息作为key
-        if(CheckTypeEnum.USER.equals(checkTypeEnum)){
-            if(request.getUserPrincipal()!=null){
-                key.append(request.getUserPrincipal().getName());
-            }else{
-                throw new RateLimitException(RateLimitErrorEnum.USER_NOT_FOUND);
-            }
-        }
-        //以IP地址作为key
-        if(CheckTypeEnum.IP.equals(checkTypeEnum)){
-            key.append(getIpAddr(request));
-        }
-        //以自定义内容作为key
-        if(CheckTypeEnum.CUSTOM.equals(checkTypeEnum)){
-            if(request.getAttribute(Const.CUSTOM)!=null){
-                key.append(request.getAttribute(Const.CUSTOM).toString());
-            }else{
-                throw new RateLimitException(RateLimitErrorEnum.CUSTOM_NOT_FOUND);
-            }
-        }
+		switch (checkTypeEnum) {
+			case USER:
+				// 以用户信息作为key
+				if (request.getUserPrincipal() != null) {
+					key.append(request.getUserPrincipal().getName());
+				} else {
+					throw new RateLimitException(RateLimitErrorEnum.USER_NOT_FOUND);
+				}
+				break;
+			case IP:
+				// 以IP地址作为key
+				key.append(getIpAddr(request));
+				break;
+			case CUSTOM:
+				// 以自定义内容作为key
+				if (request.getAttribute(Const.CUSTOM) != null) {
+					key.append(request.getAttribute(Const.CUSTOM).toString());
+				} else {
+					throw new RateLimitException(RateLimitErrorEnum.CUSTOM_NOT_FOUND);
+				}
+				break;
+			case ALL:
+				break;
+			default:
+				throw new RateLimitException(String.format("unsuportted checkTypeEnum: [%s]", checkTypeEnum));
+		}
         return key.toString();
     }
 
