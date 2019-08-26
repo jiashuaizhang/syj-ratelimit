@@ -15,7 +15,7 @@
 <dependency>
     <groupId>cn.org.zhixiang</groupId>
     <artifactId>syj-ratelimit</artifactId>
-    <version>1.1.1</version>
+    <version>${lastVersion}</version>
  </dependency>
  ```
 ### 2.  注册syj-ratelimit
@@ -227,6 +227,8 @@ public class TestRateLimitController {
 >2. 修复redis集群部署slot不一致问题
 #####  1.1.1
 >1. 修复令牌桶算法脚本的bug
+#####  1.1.2
+>1. 修复集群模式下的bug,修正hashTag的使用
 
 
 
