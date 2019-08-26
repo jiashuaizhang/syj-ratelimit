@@ -1,17 +1,22 @@
 package cn.org.zhixiang.util;
 
-import cn.org.zhixiang.annotation.RateLimit;
-import cn.org.zhixiang.exception.RateLimitErrorEnum;
-import cn.org.zhixiang.exception.RateLimitException;
+import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import cn.org.zhixiang.annotation.RateLimit;
+import cn.org.zhixiang.exception.RateLimitErrorEnum;
+import cn.org.zhixiang.exception.RateLimitException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Description :
@@ -20,6 +25,7 @@ import java.net.UnknownHostException;
  * CreateTime    2018/09/05
  * Description   RateLimiter工具类
  */
+@Slf4j
 public class RateLimiterUtil {
 
     private static String METHOD_PARAM_SEPARATOR = "#";
@@ -92,16 +98,9 @@ public class RateLimiterUtil {
         StringBuilder key = new StringBuilder();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         key.append(signature.getName()).append(METHOD_PARAM_SEPARATOR);
-        Class<?>[] parameterTypes=signature.getParameterTypes();
-        int paramLength = parameterTypes.length;
-        if(paramLength > 0) {
-            for (int i = 0; i < paramLength - 1; i++) {
-            	Class<?> clazz = parameterTypes[i];
-            	key.append(clazz.getName()).append(PARAM_SEPARATOR);
-    		}
-        	Class<?> last = parameterTypes[paramLength - 1];
-        	key.append(last.getName());
-        }
+        Class<?>[] parameterTypes = signature.getParameterTypes();
+        String parameterTypeNames = Arrays.stream(parameterTypes).map(Class::getName).collect(Collectors.joining(PARAM_SEPARATOR));
+        key.append(parameterTypeNames);
         key.append(PARAM_CLASS_SEPARATOR).append(joinPoint.getTarget().getClass().getName());
         return key;
     }
@@ -127,7 +126,7 @@ public class RateLimiterUtil {
                 try {
                     inet = InetAddress.getLocalHost();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    log.error(e.getClass().getName(), e);
                 }
                 ipAddress = inet.getHostAddress();
             }
@@ -139,5 +138,5 @@ public class RateLimiterUtil {
         }
         return ipAddress;
     }
-
+    
 }
