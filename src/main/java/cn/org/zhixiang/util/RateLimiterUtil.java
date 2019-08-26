@@ -86,12 +86,15 @@ public class RateLimiterUtil {
         StringBuilder key = new StringBuilder();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         key.append(signature.getName()).append(METHOD_PARAM_SEPARATOR);
-        Class[] parameterTypes=signature.getParameterTypes();
-        for (Class clazz:parameterTypes){
-            key.append(clazz.getName());
-            if(clazz != parameterTypes[parameterTypes.length - 1]){
-                key.append(PARAM_SEPARATOR);
-            }
+        Class<?>[] parameterTypes=signature.getParameterTypes();
+        int paramLength = parameterTypes.length;
+        if(paramLength > 0) {
+            for (int i = 0; i < paramLength - 1; i++) {
+            	Class<?> clazz = parameterTypes[i];
+            	key.append(clazz.getName()).append(PARAM_SEPARATOR);
+    		}
+        	Class<?> last = parameterTypes[paramLength - 1];
+        	key.append(last.getName());
         }
         key.append(PARAM_CLASS_SEPARATOR).append(joinPoint.getTarget().getClass().getName());
         return key;

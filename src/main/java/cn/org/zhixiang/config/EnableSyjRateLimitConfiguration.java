@@ -1,11 +1,10 @@
 package cn.org.zhixiang.config;
 
 
-import cn.org.zhixiang.ratelimit.RateLimiter;
-import cn.org.zhixiang.ratelimit.impl.RedisRateLimiterCounterImpl;
-import cn.org.zhixiang.ratelimit.impl.RedisRateLimiterTokenBucketImpl;
-import cn.org.zhixiang.util.RateLimitAlgorithm;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,9 +16,10 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scripting.support.ResourceScriptSource;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import cn.org.zhixiang.ratelimit.RateLimiter;
+import cn.org.zhixiang.ratelimit.impl.RedisRateLimiterCounterImpl;
+import cn.org.zhixiang.ratelimit.impl.RedisRateLimiterTokenBucketImpl;
+import cn.org.zhixiang.util.RateLimitAlgorithm;
 
 
 /**
@@ -29,7 +29,6 @@ import java.util.Map;
  * CreateTime    2018/09/05
  * Description
  */
-@Slf4j
 @Configuration
 @ComponentScan(basePackages="cn.org.zhixiang")
 public class EnableSyjRateLimitConfiguration {
@@ -49,7 +48,7 @@ public class EnableSyjRateLimitConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public RedisRateLimiterTokenBucketImpl tokenRateLimiter() {
-        DefaultRedisScript<String> consumeRedisScript=new DefaultRedisScript();
+        DefaultRedisScript<String> consumeRedisScript=new DefaultRedisScript<>();
         consumeRedisScript.setResultType(String.class);
         consumeRedisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("script/redis-ratelimiter-tokenBucket.lua")));
         return new RedisRateLimiterTokenBucketImpl(consumeRedisScript);
@@ -58,7 +57,7 @@ public class EnableSyjRateLimitConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public RedisRateLimiterCounterImpl counterRateLimiter() {
-        DefaultRedisScript<String> redisScript=new DefaultRedisScript();
+        DefaultRedisScript<String> redisScript=new DefaultRedisScript<>();
         redisScript.setResultType(String.class);
         redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("script/redis-ratelimiter-counter.lua")));
         return new RedisRateLimiterCounterImpl(redisScript);
@@ -71,6 +70,7 @@ public class EnableSyjRateLimitConfiguration {
     }
 
     @Bean("rateLimiterMap")
+    @ConditionalOnMissingBean(name = "rateLimiterMap")
     public Map<RateLimitAlgorithm, RateLimiter> rateLimiterMap() {
         Map<RateLimitAlgorithm, RateLimiter> rateLimiterMap = new HashMap<>();
         rateLimiterMap.put(RateLimitAlgorithm.COUNTER, counterRateLimiter());

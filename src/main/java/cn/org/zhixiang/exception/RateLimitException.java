@@ -8,36 +8,16 @@ package cn.org.zhixiang.exception;
  * Description   业务异常信息类
  */
 public class RateLimitException extends RuntimeException {
-    private String msg;
-    private Integer status;
+	
+	private static final long serialVersionUID = -8096976507466419703L;
 
     public RateLimitException(RateLimitErrorEnum error){
-        this.msg = error.getMsg();
+        this(error.getMsg());
     }
 
     public RateLimitException(String msg) {
         super(msg);
-        this.msg = msg;
     }
 
-    @Override
-    public String getMessage() {
-        return msg;
-    }
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
 }
 

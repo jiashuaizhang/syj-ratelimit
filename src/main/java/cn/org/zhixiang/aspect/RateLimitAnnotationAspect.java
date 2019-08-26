@@ -1,10 +1,7 @@
 package cn.org.zhixiang.aspect;
 
-import cn.org.zhixiang.annotation.RateLimit;
-import cn.org.zhixiang.ratelimit.RateLimiter;
-import cn.org.zhixiang.util.RateLimitAlgorithm;
-import cn.org.zhixiang.util.RateLimiterUtil;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -12,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import cn.org.zhixiang.annotation.RateLimit;
+import cn.org.zhixiang.ratelimit.RateLimiter;
+import cn.org.zhixiang.util.RateLimitAlgorithm;
+import cn.org.zhixiang.util.RateLimiterUtil;
 
 /**
  * Description :
@@ -21,7 +21,6 @@ import java.util.Map;
  * CreateTime    2018/09/05
  * Description   RateLimit注解切面类
  */
-@Slf4j
 @Aspect
 @Component
 public class RateLimitAnnotationAspect {
