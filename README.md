@@ -18,6 +18,7 @@
     <version>${lastVersion}</version>
  </dependency>
  ```
+##### 注: 当前fork没有发布到maven中心仓库，请编译源码手动安装
 ### 2.  注册syj-ratelimit
 >因为并不是所有的项目都会使用SpringBoot,所以在注册这一步我们分为两种情况
 #### 1.SpringBoot或SpringCloud项目
