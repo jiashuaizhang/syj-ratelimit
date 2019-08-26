@@ -11,5 +11,5 @@ import cn.org.zhixiang.exception.RateLimitException;
  */
 public interface RateLimiterAlgorithm {
 
-    void consume(String key, long limit, long lrefreshInterval, long tokenBucketStepNum, long tokenBucketTimeInterval);
+    void consume(String key, long limit, long refreshInterval, long tokenBucketStepNum, long tokenBucketTimeInterval);
 }

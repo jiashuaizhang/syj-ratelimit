@@ -27,7 +27,7 @@ public class RateLimiterUtil {
      * @return key
      */
     public static String getRateKey(JoinPoint joinPoint, CheckTypeEnum checkTypeEnum){
-        StringBuffer key=new StringBuffer(Const.HASH_TAG);
+        StringBuilder key = new StringBuilder();
         //以方法名加参数列表作为唯一标识方法的key
         if(CheckTypeEnum.ALL.equals(checkTypeEnum)){
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
