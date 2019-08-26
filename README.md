@@ -227,7 +227,7 @@ public class TestRateLimitController {
 >2. 修复redis集群部署slot不一致问题
 #####  1.1.1
 >1. 修复令牌桶算法脚本的bug
-#####  1.1.2
+#####  z-1.1.2
 >1. 修复集群模式下的bug,修正hashTag的使用
 
 
