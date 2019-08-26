@@ -18,6 +18,7 @@
     <version>${lastVersion}</version>
  </dependency>
  ```
+##### 注: 当前fork没有发布到maven中心仓库，请编译源码手动安装
 ### 2.  注册syj-ratelimit
 >因为并不是所有的项目都会使用SpringBoot,所以在注册这一步我们分为两种情况
 #### 1.SpringBoot或SpringCloud项目
@@ -230,12 +231,3 @@ public class TestRateLimitController {
 #####  z-1.1.3
 >1. 统一了类和方法上的注解，以方法注解为优先
 >2. 限流算法细化到注解级
-
-
-
-<h4 style="color:red">
-扫码关注公众号即可领取2000GJava学习资源 </h4>
-
-
-
-![1](https://shiyujun.cn/img/gongzhonghao.jpg)
