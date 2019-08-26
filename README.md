@@ -230,12 +230,3 @@ public class TestRateLimitController {
 #####  z-1.1.3
 >1. 统一了类和方法上的注解，以方法注解为优先
 >2. 限流算法细化到注解级
-
-
-
-<h4 style="color:red">
-扫码关注公众号即可领取2000GJava学习资源 </h4>
-
-
-
-![1](https://shiyujun.cn/img/gongzhonghao.jpg)
