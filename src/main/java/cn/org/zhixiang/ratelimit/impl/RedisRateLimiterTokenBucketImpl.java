@@ -5,12 +5,9 @@ import cn.org.zhixiang.exception.RateLimitException;
 import cn.org.zhixiang.ratelimit.RateLimiter;
 import cn.org.zhixiang.util.Const;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Instant;
@@ -59,7 +56,6 @@ public class RedisRateLimiterTokenBucketImpl implements RateLimiter {
         if(Const.REDIS_ERROR.equals(result)){
             throw new RateLimitException(RateLimitErrorEnum.TOO_MANY_REQUESTS);
         }
-
     }
 
 }

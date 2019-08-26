@@ -5,14 +5,11 @@ import cn.org.zhixiang.exception.RateLimitException;
 import cn.org.zhixiang.ratelimit.RateLimiter;
 import cn.org.zhixiang.util.Const;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

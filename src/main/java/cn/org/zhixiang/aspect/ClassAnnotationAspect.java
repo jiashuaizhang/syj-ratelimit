@@ -1,7 +1,7 @@
 package cn.org.zhixiang.aspect;
 
-import cn.org.zhixiang.algorithm.RateLimiterAlgorithm;
 import cn.org.zhixiang.annotation.ClassRateLimit;
+import cn.org.zhixiang.ratelimit.RateLimiter;
 import cn.org.zhixiang.util.RateLimiterUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -24,8 +24,7 @@ import org.springframework.stereotype.Component;
 public class ClassAnnotationAspect {
 
     @Autowired
-    private RateLimiterAlgorithm rateLimiterAlgorithm;
-
+    private RateLimiter rateLimiter;
 
     /**
      *
@@ -33,6 +32,7 @@ public class ClassAnnotationAspect {
      */
     @Pointcut("@within(classRateLimit)")
     public void annotationPointcut(ClassRateLimit classRateLimit) {
+
     }
 
 
@@ -44,7 +44,7 @@ public class ClassAnnotationAspect {
     @Before("@within(classRateLimit)")
     public void doBefore(JoinPoint joinPoint, ClassRateLimit classRateLimit) {
         String key= RateLimiterUtil.getRateKey(joinPoint,classRateLimit.checkType());
-        rateLimiterAlgorithm.consume(key,classRateLimit.limit(),classRateLimit.refreshInterval(),classRateLimit.tokenBucketStepNum(),classRateLimit.tokenBucketTimeInterval());
+        rateLimiter.consume(key,classRateLimit.limit(),classRateLimit.refreshInterval(),classRateLimit.tokenBucketStepNum(),classRateLimit.tokenBucketTimeInterval());
     }
 
 
